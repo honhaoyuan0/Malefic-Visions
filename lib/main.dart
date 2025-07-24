@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'analysis/screen.dart';
+import 'screens/screens.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,18 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return MaterialApp(
+      title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF243347),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF243347),
-          centerTitle: true,
+        primarySwatch: Colors.deepPurple,
       ),
-    ),
-    color: const Color(0xFF243347),
-      debugShowCheckedModeBanner: false,
-      title: 'Malefic Visions',
-      home: ScreenTimeAnalysis(),
+      home: const MyHome(),
     );
   }
 }
-
