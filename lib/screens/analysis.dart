@@ -6,13 +6,7 @@ class ScreenTimeAnalysis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const BackButton(color: Color.fromARGB(255, 0, 0, 0)),
-        title: const TitleText('Analysis'),
-        centerTitle: true,
-      ),
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.only(top: 25, left: 18, right: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,8 +42,7 @@ class ScreenTimeAnalysis extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

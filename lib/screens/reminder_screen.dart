@@ -5,29 +5,35 @@ class Reminder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea( 
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Time's Up!"),
+    return SafeArea( 
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Time's Up!",
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Your attention is precious - let's invest it wisely 💎"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Your attention is precious - let's invest it wisely 💎",
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Close Overlay'),
-              ),
-            ],
-          ),
+            ),
+            ElevatedButton(
+              style: Theme.of(context).elevatedButtonTheme.style,
+              onPressed: () {
+                
+              },
+              child: const Text('Quit your current app bitch'),
+            ),
+          ],
         ),
       ),
     );
