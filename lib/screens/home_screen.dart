@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'reminder_screen.dart';
 import 'analysis.dart';
+import 'timer_screen.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({
@@ -17,13 +18,13 @@ class _MyHomeState extends State<MyHome> {
   Widget _buildPage() {
     switch (currentPageIndex) {
       case 0:
-        return HomeBody();
+        return TimerScreen();
       case 1:
         return ScreenTimeAnalysis();
       case 2:
         return Reminder();
       default:
-        return HomeBody(); // Default to HomeBody if index is out of range
+        return TimerScreen(); // Default to TimerScreen if index is out of range
     }
   }
 
@@ -62,25 +63,3 @@ class _MyHomeState extends State<MyHome> {
   }
 }
 
-// Home Page Body
-class HomeBody extends StatelessWidget {
-  const HomeBody({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Welcome to the Home Screen!',
-            style: TextStyle(fontSize: 24),
-          ),
-          const Text("Commi get to work bij")
-        ],
-      ),
-    );
-  }
-}
