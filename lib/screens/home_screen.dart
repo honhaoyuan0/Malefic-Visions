@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'reminder_screen.dart';
 import 'analysis.dart';
+import '../global_widgets/bottom_nav_bar.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({
@@ -35,32 +36,14 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Nav Bar
-      bottomNavigationBar: NavigationBar(
+      // Nav Bar widget that i've extracted as a global widget
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.indigoAccent,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home_outlined),
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.analytics_outlined),
-            icon: Icon(Icons.analytics),
-            label: 'Analysis',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.notifications_outlined),
-            icon: Icon(Icons.notifications),
-            label: 'Reminders',
-          ),
-        ],
       ),
         body: _buildPage(),
       );
