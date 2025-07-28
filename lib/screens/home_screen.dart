@@ -14,6 +14,11 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   int currentPageIndex = 0;
 
+  // A function that builds the current page based on the index
+  // This function is used to switch between different screens in the app
+  // It returns a widget instead of an actual screen corresponding to the current page index
+  // As replacing a widget is more efficient than replacing the entire screen
+  // If the index is out of range, it defaults to HomeBody
   Widget _buildPage() {
     switch (currentPageIndex) {
       case 0:
