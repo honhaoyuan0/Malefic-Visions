@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-// Get the screen dimensions - for more responsive layouts based on screen size
+// A utility class for accessing screen dimensions and paddings - 
+// - for more responsive layouts based on screen size
 class ScreenUtils {
   // Store the screen dimensions and padding
   final BuildContext context;
@@ -9,8 +10,8 @@ class ScreenUtils {
   late final double topPadding;
   late final double bottomPadding;
 
+  // Initialize the screen dimensions and padding using MediaQuery
   ScreenUtils(this.context){
-    // Initialize the screen dimensions and padding
     final mediaQuery = MediaQuery.of(context);
     width = mediaQuery.size.width;
     height = mediaQuery.size.height;

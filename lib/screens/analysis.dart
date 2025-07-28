@@ -1,48 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'screen_utils.dart';
+import 'package:malefic_visions/analysis_widgets/screen_time.dart';
 
 class ScreenTimeAnalysis extends StatelessWidget {
   const ScreenTimeAnalysis({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 25, left: 18, right: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            //Screen Time
-            const TitleText('Screen Time'),
-            const SizedBox(height: 25),
-            const DailyScreenTime(),
-
-            //App Usage Chart
-            const SizedBox(height: 27),
-            const TitleText('App Usage'),
-            const SizedBox(height: 10),
-            const TitleText(
-              'Here is the bar chart of your app usage',
-              style: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontSize: 16.0,
-              ),
+    final screen = ScreenUtils(context);
+        return Padding(
+          // Adjust padding based on screen size - to prevent overflow issues
+          padding: EdgeInsets.only(
+            top: screen.topPadding,
+            bottom: screen.bottomPadding,
+            left: screen.width * 0.05,
+            right: screen.width * 0.05,
             ),
-
-            //Bar chart placeholder
-            const SizedBox(height: 200),
-
-            //Insights
-            const TitleText('Insights'),
-            const SizedBox(height: 15),
-            SvgPicture.asset(
-              'assets/instagram-svgrepo-com.svg',
-              width: 50,
-              height: 50,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+          
+                //Screen Time
+                const TitleText('Screen Time'),
+                SizedBox(height: screen.height * 0.03),
+                ScreenTime(),
+          
+                //App Usage Chart
+                SizedBox(height: screen.height * 0.03),
+                const TitleText('App Usage'),
+                SizedBox(height: screen.height * 0.03),
+                const TitleText(
+                  'Here is the bar chart of your app usage',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 16.0,
+                  ),
+                ),
+          
+                //Bar chart placeholder
+                SizedBox(height: screen.height * 0.15),
+          
+                //Insights
+                const TitleText('Insights'),
+                SizedBox(height: screen.height * 0.03),
+                SvgPicture.asset(
+                  'assets/instagram-svgrepo-com.svg',
+                  width: 50,
+                  height: 50,
+                ),
+              ],
             ),
-          ],
-        ),
-      );
+          );
   }
 }
 
@@ -61,7 +70,7 @@ class TitleText extends StatelessWidget {
       text,
       style: style ?? 
       const TextStyle(
-        color: Color.fromARGB(255, 0, 0, 0),
+        color: Color.fromARGB(255, 255, 255, 255),
         fontSize: 28,
         fontWeight: FontWeight.bold,
       ),
@@ -69,50 +78,9 @@ class TitleText extends StatelessWidget {
   }
 }
 
-// Daily screen time widget
-class DailyScreenTime extends StatelessWidget {
-  const DailyScreenTime({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: timebox(
-            title: 'Today',
-          ),
-        ),
-      ],
-    );
-  }
-}
 
-//Screen time box widget
-Widget timebox({
-  required String title,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    width: 200,
-    height: 135,
-    decoration: BoxDecoration(
-      color: const Color.fromARGB(255, 0, 0, 0),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: const Color.fromARGB(26, 241, 241, 241)),
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(color: Color.fromARGB(179, 250, 250, 250)),
-        ),
-        ],
-    ),
-  );
-}
+
 
 
 
