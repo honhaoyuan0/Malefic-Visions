@@ -6,43 +6,45 @@ class ScreenTimeAnalysis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 25, left: 18, right: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            //Screen Time
-            const TitleText('Screen Time'),
-            const SizedBox(height: 25),
-            const DailyScreenTime(),
-
-            //App Usage Chart
-            const SizedBox(height: 27),
-            const TitleText('App Usage'),
-            const SizedBox(height: 10),
-            const TitleText(
-              'Here is the bar chart of your app usage',
-              style: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontSize: 16.0,
+    return SafeArea(
+      child: Padding(
+          padding: const EdgeInsets.only(top: 25, left: 18, right: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+      
+              //Screen Time
+              const TitleText('Screen Time'),
+              const SizedBox(height: 25),
+              const DailyScreenTime(),
+      
+              //App Usage Chart
+              const SizedBox(height: 27),
+              const TitleText('App Usage'),
+              const SizedBox(height: 10),
+              const TitleText(
+                'Here is the bar chart of your app usage',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  fontSize: 16.0,
+                ),
               ),
-            ),
-
-            //Bar chart placeholder
-            const SizedBox(height: 200),
-
-            //Insights
-            const TitleText('Insights'),
-            const SizedBox(height: 15),
-            SvgPicture.asset(
-              'assets/instagram-svgrepo-com.svg',
-              width: 50,
-              height: 50,
-            ),
-          ],
+      
+              //Bar chart placeholder
+              const SizedBox(height: 200),
+      
+              //Insights
+              const TitleText('Insights'),
+              const SizedBox(height: 15),
+              SvgPicture.asset(
+                'assets/instagram-svgrepo-com.svg',
+                width: 50,
+                height: 50,
+              ),
+            ],
+          ),
         ),
-      );
+    );
   }
 }
 

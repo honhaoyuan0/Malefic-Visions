@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'reminder_screen.dart';
 import 'analysis.dart';
 import 'timer_screen.dart';
+import '../global_widgets/bottom_nav_bar.dart';
+
 
 class MyHome extends StatefulWidget {
   const MyHome({
@@ -15,6 +17,11 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   int currentPageIndex = 0;
 
+  // A function that builds the current page based on the index
+  // This function is used to switch between different screens in the app
+  // It returns a widget instead of an actual screen corresponding to the current page index
+  // As replacing a widget is more efficient than replacing the entire screen
+  // If the index is out of range, it defaults to HomeBody
   Widget _buildPage() {
     switch (currentPageIndex) {
       case 0:
@@ -31,32 +38,14 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Nav Bar
-      bottomNavigationBar: NavigationBar(
+      // Nav Bar widget that i've extracted as a global widget
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.indigoAccent,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home_outlined),
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.analytics_outlined),
-            icon: Icon(Icons.analytics),
-            label: 'Analysis',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.notifications_outlined),
-            icon: Icon(Icons.notifications),
-            label: 'Reminders',
-          ),
-        ],
       ),
         body: _buildPage(),
       );
