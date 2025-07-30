@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:malefic_visions/screens/permission_check_screen.dart';
 import 'screens/screens.dart';
 import 'theme/app_theme.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Malefic Visions',
       theme: AppTheme.indigoTheme,
-      home: const MyHome(),
+      home: PermissionCheckScreen(),
     );
   }
 }

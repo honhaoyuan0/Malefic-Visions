@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:malefic_visions/services/overlay_service.dart';
 
 class ReminderOverlay extends StatefulWidget {
   const ReminderOverlay({super.key});
@@ -46,6 +48,16 @@ class _ReminderOverlayState extends State<ReminderOverlay>
     super.dispose();
   }
 
+    // A function to implement when commi's timer trigger function is finished
+    Future<void> _showReminderOverlay() async {
+    if (await OverlayService.hasOverlayPermission()) {
+      // Show overlay
+      await FlutterOverlayWindow.showOverlay();
+    } else {
+      // Request permission first
+      await OverlayService.requestOverlayPermission();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Material(
