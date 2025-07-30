@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 // A utility class for accessing screen dimensions and paddings - 
 // - for more responsive layouts based on screen size
 class ScreenUtils {

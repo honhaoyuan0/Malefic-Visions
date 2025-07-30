@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'screen_utils.dart';
-import 'package:malefic_visions/analysis_widgets/screen_time.dart';
+import 'package:malefic_visions/screens/screen_time.dart';
+import 'package:malefic_visions/screens/bar_chart.dart';
 
 class ScreenTimeAnalysis extends StatelessWidget {
   const ScreenTimeAnalysis({super.key});
@@ -24,23 +25,15 @@ class ScreenTimeAnalysis extends StatelessWidget {
                 //Screen Time
                 const TitleText('Screen Time'),
                 SizedBox(height: screen.height * 0.03),
-                ScreenTime(),
+                Center(child: ScreenTime()),
           
                 //App Usage Chart
                 SizedBox(height: screen.height * 0.03),
                 const TitleText('App Usage'),
-                SizedBox(height: screen.height * 0.03),
-                const TitleText(
-                  'Here is the bar chart of your app usage',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontSize: 16.0,
-                  ),
-                ),
-          
+      
                 //Bar chart placeholder
-                SizedBox(height: screen.height * 0.15),
-          
+                CategoryBarChart(),
+                
                 //Insights
                 const TitleText('Insights'),
                 SizedBox(height: screen.height * 0.03),
@@ -54,8 +47,6 @@ class ScreenTimeAnalysis extends StatelessWidget {
           );
   }
 }
-
-
 
 
 // Title text widget
