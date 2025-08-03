@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'app_selection_screen.dart';
-
-// =============================================================================
-// TIMER SCREEN - Main screen for setting up timer and selecting apps
-// =============================================================================
+import '../models/models.dart';
+import 'session_config_screen.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
@@ -12,26 +9,24 @@ class TimerScreen extends StatefulWidget {
   State<TimerScreen> createState() => _TimerScreenState();
 }
 
-// =============================================================================
-// STATE CLASS - Manages timer values and selected apps
-// =============================================================================
-
 class _TimerScreenState extends State<TimerScreen> {
-  // =============================================================================
-  // STATE VARIABLES - Store current timer settings and selected apps
-  // =============================================================================
+  // User's sessions - starts empty
+  List<Session> sessions = [];
 
-  // Timer duration values (user can scroll to change these)
-  int selectedHours = 0;
-  int selectedMinutes = 0;
-  int selectedSeconds = 0;
+  Session? get activeSession => sessions.where((s) => s.isActive).firstOrNull;
 
-  // List of apps user wants reminders for (updated from app selection screen)
-  List<String> selectedApps = [];
+  List<Session> get sortedSessions {
+    final List<Session> sorted = List.from(sessions);
+    sorted.sort((a, b) {
+      // Active sessions come first
+      if (a.isActive && !b.isActive) return -1;
+      if (!a.isActive && b.isActive) return 1;
+      // If both are active or both are inactive, maintain original order
+      return 0;
+    });
+    return sorted;
+  }
 
-  // =============================================================================
-  // UI BUILD METHOD - Creates the visual interface
-  // =============================================================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,29 +34,30 @@ class _TimerScreenState extends State<TimerScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
-              // =============================================================================
-              // SCREEN TITLE - "Remind me every" heading
-              // =============================================================================
-              const Text(
-                'Remind me every',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              const SizedBox(height: 20),
+              _buildHeader(),
+              const SizedBox(height: 30),
+              Expanded(
+                child: Column(
+                  children: [
+                    // Sessions list
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: sortedSessions.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          return _buildSessionCard(sortedSessions[index]);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildAddSessionButton(),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-              const SizedBox(height: 60),
-              // =============================================================================
-              // TIME PICKER SECTION - Three scrollable wheels (HH : MM : SS)
-              // =============================================================================
-              _buildTimePicker(),
-              const SizedBox(height: 60),
-              // =============================================================================
-              // APP SELECTION SECTION - Button to choose apps for reminders
-              // =============================================================================
-              _buildAppSelectionSection(),
             ],
           ),
         ),
@@ -69,169 +65,175 @@ class _TimerScreenState extends State<TimerScreen> {
     );
   }
 
-  // =============================================================================
-  // TIME PICKER BUILDER - Creates three wheel pickers with colons (00 : 00 : 00)
-  // =============================================================================
-  Widget _buildTimePicker() {
-    return SizedBox(
-      height: 200,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // =============================================================================
-          // HOURS WHEEL - Scrollable picker for hours (0-23)
-          // =============================================================================
-          Expanded(child: _buildLoopingWheelPicker(
-            maxValue: 24,
-            selectedValue: selectedHours,
-            onSelectedItemChanged: (value) {
-              setState(() {
-                selectedHours = value;
-              });
-            },
-          )),
-          // Colon separator between hours and minutes
-          const Text(
-            ':',
-            style: TextStyle(
-              fontSize: 48,
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          // =============================================================================
-          // MINUTES WHEEL - Scrollable picker for minutes (0-59)
-          // =============================================================================
-          Expanded(child: _buildLoopingWheelPicker(
-            maxValue: 60,
-            selectedValue: selectedMinutes,
-            onSelectedItemChanged: (value) {
-              setState(() {
-                selectedMinutes = value;
-              });
-            },
-          )),
-          // Colon separator between minutes and seconds
-          const Text(
-            ':',
-            style: TextStyle(
-              fontSize: 48,
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          // =============================================================================
-          // SECONDS WHEEL - Scrollable picker for seconds (0-59)
-          // =============================================================================
-          Expanded(child: _buildLoopingWheelPicker(
-            maxValue: 60,
-            selectedValue: selectedSeconds,
-            onSelectedItemChanged: (value) {
-              setState(() {
-                selectedSeconds = value;
-              });
-            },
-          )),
-        ],
-      ),
-    );
-  }
-
-  // =============================================================================
-  // INDIVIDUAL WHEEL PICKER - Creates a single scrollable wheel with looping
-  // =============================================================================
-  Widget _buildLoopingWheelPicker({
-    required int maxValue,
-    required int selectedValue,
-    required Function(int) onSelectedItemChanged,
-  }) {
-    return ListWheelScrollView.useDelegate(
-      itemExtent: 60,                              // Height of each number
-      perspective: 0.01,                           // 3D curve effect
-      diameterRatio: 1.5,                          // How curved the wheel looks
-      physics: const FixedExtentScrollPhysics(),   // Snaps to each number
-      onSelectedItemChanged: (index) {
-        // Handle looping: when scrolling past max, wrap to 0
-        // When scrolling below 0, wrap to max-1
-        final actualValue = ((index % maxValue) + maxValue) % maxValue;
-        onSelectedItemChanged(actualValue);
-      },
-      // Use Flutter's built-in looping delegate for infinite scroll
-      childDelegate: ListWheelChildLoopingListDelegate(
-        children: List.generate(maxValue, (index) {
-          final isSelected = index == selectedValue;
-          return Center(
-            child: Text(
-              index.toString().padLeft(2, '0'),    // Format as "01", "02", etc.
-              style: TextStyle(
-                fontSize: isSelected ? 36 : 24,    // Selected number is larger
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w300,
-                color: isSelected ? Colors.white : Colors.grey,  // Selected is white
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  // =============================================================================
-  // APP SELECTION SECTION - Clickable area to choose apps for reminders
-  // =============================================================================
-  Widget _buildAppSelectionSection() {
-    return GestureDetector(
-      onTap: _navigateToAppSelection,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Sessions',
+          style: Theme.of(context).textTheme.displayMedium,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Dynamic text showing selection status
-            Expanded(
-              child: Text(
-                selectedApps.isEmpty
-                  ? 'Select apps...'                    // No apps selected
-                  : '${selectedApps.length} app${selectedApps.length == 1 ? '' : 's'} selected',  // Show count
-                style: TextStyle(
-                  fontSize: 16,
-                  color: selectedApps.isEmpty ? Colors.grey : Colors.white,  // Grey if empty, white if selected
-                ),
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildSessionCard(Session session) {
+    return GestureDetector(
+      onTap: () => _editSession(session),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: session.isActive 
+                          ? Theme.of(context).colorScheme.primary 
+                          : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      session.icon,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          session.name,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        if (session.isActive)
+                          Text(
+                            'Active',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: session.isActive,
+                    onChanged: (value) => _toggleSession(session, value),
+                  ),
+                ],
               ),
-            ),
-            // Arrow icon indicating this is clickable
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 16,
-            ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    '${session.appCount} Apps',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddSessionButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _createNewSession,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, size: 20),
+            SizedBox(width: 8),
+            Text('Add Session'),
           ],
         ),
       ),
     );
   }
 
-  // =============================================================================
-  // NAVIGATION METHOD - Opens app selection screen and handles results
-  // =============================================================================
-  void _navigateToAppSelection() {
-    Navigator.push(
+  void _toggleSession(Session session, bool isActive) {
+    setState(() {
+      // If activating this session, deactivate all others
+      if (isActive) {
+        for (int i = 0; i < sessions.length; i++) {
+          sessions[i] = sessions[i].copyWith(isActive: false);
+        }
+      }
+      
+      // Update the selected session
+      final index = sessions.indexWhere((s) => s.id == session.id);
+      sessions[index] = session.copyWith(isActive: isActive);
+    });
+  }
+
+
+  void _createNewSession() async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AppSelectionScreen(
-          selectedApps: selectedApps,           // Send current selections
-          onAppsSelected: (apps) {              // Callback for when user is done
+        builder: (context) => SessionConfigScreen(
+          onSessionSaved: (session) {
             setState(() {
-              selectedApps = apps;              // Update our list with new selections
+              // If this session is being activated, deactivate others
+              if (session.isActive) {
+                for (int i = 0; i < sessions.length; i++) {
+                  sessions[i] = sessions[i].copyWith(isActive: false);
+                }
+              }
+              sessions.add(session);
             });
           },
         ),
       ),
     );
+  }
+
+  void _editSession(Session session) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SessionConfigScreen(
+          session: session,
+          onSessionSaved: (updatedSession) {
+            setState(() {
+              final index = sessions.indexWhere((s) => s.id == session.id);
+              if (index != -1) {
+                // If this session is being activated, deactivate others
+                if (updatedSession.isActive && !session.isActive) {
+                  for (int i = 0; i < sessions.length; i++) {
+                    if (i != index) {
+                      sessions[i] = sessions[i].copyWith(isActive: false);
+                    }
+                  }
+                }
+                sessions[index] = updatedSession;
+              }
+            });
+          },
+        ),
+      ),
+    );
+
+    // Handle session deletion
+    if (result == 'delete') {
+      setState(() {
+        sessions.removeWhere((s) => s.id == session.id);
+      });
+    }
   }
 }
