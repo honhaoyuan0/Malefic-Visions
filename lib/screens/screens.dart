@@ -1,3 +1,9 @@
 export 'home_screen.dart';
 export 'reminder_screen.dart';
 export 'analysis.dart';
+export 'screen_time.dart';
+export 'screen_time_breakdown.dart';
+export '../global_utilities/screen_utils.dart';
+export 'bar_chart.dart';
+export 'screen_time_comparison.dart';
+export 'insights.dart';

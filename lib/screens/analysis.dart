@@ -1,48 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'screen_utils.dart';
-import 'package:malefic_visions/screens/screen_time.dart';
-import 'package:malefic_visions/screens/bar_chart.dart';
+import 'screens.dart';
 
-class ScreenTimeAnalysis extends StatelessWidget {
+class ScreenTimeAnalysis extends StatefulWidget {
   const ScreenTimeAnalysis({super.key});
 
   @override
+  State<ScreenTimeAnalysis> createState() => _ScreenTimeAnalysisState(); 
+}
+
+class _ScreenTimeAnalysisState extends State<ScreenTimeAnalysis>{
+  @override
   Widget build(BuildContext context) {
     final screen = ScreenUtils(context);
-        return Padding(
+        return Scaffold(
+          body: SafeArea(
           // Adjust padding based on screen size - to prevent overflow issues
-          padding: EdgeInsets.only(
-            top: screen.topPadding,
-            bottom: screen.bottomPadding,
-            left: screen.width * 0.05,
-            right: screen.width * 0.05,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-          
-                //Screen Time
-                const TitleText('Screen Time'),
-                SizedBox(height: screen.height * 0.03),
-                Center(child: ScreenTime()),
-          
-                //App Usage Chart
-                SizedBox(height: screen.height * 0.03),
-                const TitleText('App Usage'),
-      
-                //Bar chart placeholder
-                CategoryBarChart(),
-                
-                //Insights
-                const TitleText('Insights'),
-                SizedBox(height: screen.height * 0.03),
-                SvgPicture.asset(
-                  'assets/instagram-svgrepo-com.svg',
-                  width: 50,
-                  height: 50,
+            child:Padding(
+              padding: EdgeInsets.only(
+                left: screen.width * 0.05,
+                right: screen.width * 0.03,
                 ),
-              ],
+                //Wrap with ListView to show blocked contents
+                child: ListView(
+                  children: [
+                    //Screen Time
+                    const TitleText('Screen Time'),
+                    SizedBox(height: screen.height * 0.03),
+                    Center(child: ScreenTime()),
+              
+                    //App Usage Chart
+                    SizedBox(height: screen.height * 0.03),
+                    const TitleText('App Usage'),
+                  
+                    //Bar chart placeholder
+                    CategoryBarChart(),
+                    
+                    //Insights
+                    const TitleText('Insights'),
+                    SizedBox(height: screen.height * 0.03),
+                    AppInsights(),
+                    //SvgPicture.asset(
+                    //  'assets/instagram-svgrepo-com.svg',
+                    //  width: 50,
+                    //  height: 50,
+                    //),
+                  ],
+                ),
+              ),
             ),
           );
   }

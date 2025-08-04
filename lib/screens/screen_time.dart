@@ -1,6 +1,5 @@
 import'package:flutter/material.dart';
-import'package:malefic_visions/screens/screen_utils.dart';
-import'screen_time_breakdown.dart';
+import'screens.dart';
 
 // Placeholder widget using mock data for screen time.
 // real screen time data will be integrated later.
