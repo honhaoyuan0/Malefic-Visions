@@ -32,6 +32,15 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+frontend/build/
+
+# Prevent Flutter from recreating platform folders in root
+/android/
+/ios/
+/linux/
+/macos/
+/windows/
+/web/
 
 # Symbolication related
 app.*.symbols
