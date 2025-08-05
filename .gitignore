@@ -33,6 +33,47 @@ migrate_working_dir/
 .pub/
 /build/
 frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+
+# Android build files
+frontend/android/app/debug/
+frontend/android/app/profile/
+frontend/android/app/release/
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/gradle/
+frontend/android/local.properties
+
+# iOS build files
+frontend/ios/Flutter/flutter_export_environment.sh
+frontend/ios/Runner.xcworkspace/xcuserdata/
+frontend/ios/Runner.xcodeproj/xcuserdata/
+frontend/ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+frontend/ios/Pods/
+frontend/ios/Podfile.lock
+frontend/ios/.symlinks/
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Flutter/ephemeral/
+
+# All build directories
+**/build/
+**/intermediates/
+**/outputs/
+**/tmp/
+
+# Large binary files that should never be committed
+*.so
+*.dylib
+*.jar
+*.aar
+*.dex
+*.ap_
+*.apk
 
 # Prevent Flutter from recreating platform folders in root
 /android/
