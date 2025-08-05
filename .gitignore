@@ -95,7 +95,7 @@ app.*.map.json
 /android/app/release
 
 # Python/Flask Backend
-backend/.venv/
+backend/venv/
 backend/__pycache__/
 backend/*.pyc
 backend/*.pyo
