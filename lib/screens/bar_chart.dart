@@ -43,7 +43,7 @@ class _CategoryBarChartState extends State<CategoryBarChart> {
     
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -122,10 +122,9 @@ class _CategoryBarChartState extends State<CategoryBarChart> {
               }
               return const SizedBox.shrink();
             },
-          ),
         ),
       ),
-
+    ),
       //Generate bar chart for each categories 
       barGroups: List.generate(
         _appCategories.length,

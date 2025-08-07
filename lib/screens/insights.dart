@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'screens.dart';
@@ -68,14 +69,71 @@ Widget buildInsightRow({
 }
 
 class _AppInsightState extends State<AppInsights> {
+  
 
   //Map Categories to their respective icons
   final Map<String,String> categoryIcons = {
     'Social Media': 'assets/instagram-svgrepo-com.svg',
     'Entertainment': 'assets/video-library-svgrepo-com.svg',
     'Productivity': 'assets/note-svgrepo-com.svg',
+    'Timer': 'assets/timer-svgrepo-com.svg',
   };
 
+  List<Map<String,String>> insights = [];
+
+  @override
+  void initState(){
+    super.initState();
+    _loadInsights();
+  }
+
+  void _loadInsights() async {
+    await Future.delayed(Duration.zero);
+    setState((){
+      insights = generateInsights();
+    });
+  }
+  
+  //Function to generate longest screen time app insights
+  Map<String,String>? generateMostUsedApp(List<AppUsage> usageList) {
+    if(usageList.isEmpty) return null;
+
+    final AppUsage mostUsed = usageList.reduce(
+      (a,b) => a.usageTime > b.usageTime ? a : b,
+    );
+
+    final List<String> messageType = ['mostUsed', 'reminder'];
+    final random = Random();
+    final selectedType = messageType[random.nextInt(messageType.length)];
+
+    final String messageHint = getMostUsedAppHint(mostUsed, selectedType);
+    
+    return {
+      'category': mostUsed.category,
+      'message': messageHint,
+      'icon': categoryIcons['Timer']!,
+          };
+    }
+
+    String getMostUsedAppHint(AppUsage app, String type){
+    //Change time into hours - minutes
+    final int hours = app.usageTime.inHours;
+    final int mins = app.usageTime.inMinutes.remainder(60);
+    final String time = (hours > 0)
+        ? '$hours hour${hours > 1 ? "s" : ""} ${mins} minutes'
+        : '$mins minute${mins > 1 ? "s" : ""}';
+
+    switch (type){
+      case 'mostUsed':
+       return 'Most used app of the day - ${app.appName} ($time)';
+    
+      case 'reminder':
+        return 'Consider setting a 1-hour limit for ${app.appName} tommorrow.';
+
+      default:
+        return 'Most used app of the day - ${app.appName} ($time)'; 
+    }
+  }
 
   //Generate insights based on mock data
   List<Map<String, String>> generateInsights(){
@@ -92,8 +150,8 @@ class _AppInsightState extends State<AppInsights> {
       final categoryList = differences.entries.toList();//Convert to list
       categoryList.shuffle(random); 
 
-      //Show 1-2 insights only
-      final maxInsights = random.nextInt(2) + 1;
+      //Show 2-3 insights only
+      final maxInsights = random.nextInt(2) + 2;
       var count = 0;
 
       for (var entry in categoryList){
@@ -102,18 +160,26 @@ class _AppInsightState extends State<AppInsights> {
         final category = entry.key;
         final percentage = entry.value;
 
-        if(percentage.abs() > 0){ //Only show changes >10%
+        if(percentage.abs() > 5){
           final isIncrease = percentage > 0;
           final changes = isIncrease ? 'increased' : 'decreased';
           final absPercentage = percentage.abs().toStringAsFixed(0); //Make percentage absolute
-
+  
+          final iconPath = categoryIcons[category] ?? categoryIcons['Timer']!;
+      
           insights.add({
             'category': category,
-            'message': 'Your usage on $category $changes by $absPercentage%.',
-            'icon': categoryIcons[category]!,
+            'message': '$category usage $changes by $absPercentage% today',
+            'icon': iconPath,
           });
           count++;
         }
+      }
+
+      //Add most used app insight
+      final mostUsedApp = generateMostUsedApp(mockTodayUsage); 
+      if (mostUsedApp != null){
+        insights.add(mostUsedApp);
       }
        return insights;
       }
@@ -121,13 +187,14 @@ class _AppInsightState extends State<AppInsights> {
   
   @override
   Widget build(BuildContext context) {
-    final insights = generateInsights();
       return Column(
-        mainAxisSize: MainAxisSize.min,
-          children: insights.map((insight) => buildInsightRow(
+          children: insights.map((insight) => Padding(
+            padding: EdgeInsets.only(bottom :7.0),
+            child: buildInsightRow(
             context: context,
             svgPath: insight['icon']!,
             message: insight['message']!,
+            ),
           )).toList(),
       );
    }
