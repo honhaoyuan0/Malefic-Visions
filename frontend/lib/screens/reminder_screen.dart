@@ -20,7 +20,7 @@ class _ReminderOverlayState extends State<ReminderOverlay>
   // State variables for API response
   String _reminderMessage = "Your attention is precious 💎\nLet's invest it wisely";
   bool _isLoading = true;
-  int timer_in_sec = 30;
+  int timerInSeconds = 180;
 
   @override
   void initState() {
@@ -48,41 +48,52 @@ class _ReminderOverlayState extends State<ReminderOverlay>
 
     _animationController.forward();
     
-    // Make GET request when screen loads
+    // Make POST request when screen loads
     _fetchReminderMessage();
   }
 
   // Method to fetch reminder message from backend
   Future<void> _fetchReminderMessage() async {
+    print("🔥 _fetchReminderMessage called!"); // Debug print
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
     try {
+      // print("🌐 Making POST request to backend..."); // Debug print
+      
       // Make POST request to backend with timer in seconds
       final response = await http.post(
-        Uri.parse('http://localhost:5000/reminder'),
+        Uri.parse('http://10.249.62.113:5001/reminder'), // Changed from 5001 to 5000
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'timer': timer_in_sec, // Send timer value in seconds
+          'timer': timerInSeconds, // Send timer value in seconds
         }),
       );
 
+      // print("📡 Response received: ${response.statusCode}"); // Debug print
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        // print("✅ Success: $data"); // Debug print
         setState(() {
           _reminderMessage = data['message'] ?? _reminderMessage;
           _isLoading = false;
         });
       } else {
         // Handle error response
+        // print("❌ Error: ${response.statusCode} - ${response.body}"); // Debug print
         setState(() {
-          _isLoading = false;
+          _isLoading = true;
         });
-        // print('Failed to fetch reminder: ${response.statusCode}');
       }
     } catch (e) {
       // Handle network error (e.g., backend not running)
+      print("💥 Exception: $e"); // Debug print
       setState(() {
         _isLoading = false;
       });
-      // print('Error fetching reminder: $e');
       // Keep the default message if backend is not available
     }
   }

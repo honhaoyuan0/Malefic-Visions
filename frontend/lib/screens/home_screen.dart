@@ -29,7 +29,7 @@ class _MyHomeState extends State<MyHome> {
       case 1:
         return ScreenTimeAnalysis();
       case 2:
-        return Reminder();
+        return Reminder(key: UniqueKey()); // Force recreation each time
       default:
         return TimerScreen(); // Default to TimerScreen if index is out of range
     }

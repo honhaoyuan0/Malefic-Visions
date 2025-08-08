@@ -28,7 +28,7 @@ def get_reminder():
         # Generate AI response
         response = client.models.generate_content(
             model="gemini-2.0-flash-exp",
-            contents=f"Provide a short reminder in few words that the user should stop using the current app to prevent doom scrolling as it's already been {timer} minutes, which is the time they set for themselves. And maybe an advice on what they could be doing instead. I need a direct answer as your response is directed to my app display. Keep it under 50 words and motivational.",
+            contents=f"Provide a short reminder in few words that the user should stop using the current app to prevent doom scrolling as it's already been {timer} seconds, which is the time they set for themselves. And maybe an advice on what they could be doing instead. I need a direct answer as your response is directed to my app display. Keep it under 50 words and motivational.",
         )
         
         return jsonify({
@@ -51,4 +51,4 @@ def health_check():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
