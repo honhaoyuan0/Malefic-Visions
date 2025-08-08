@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:malefic_visions/services/overlay_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ReminderOverlay extends StatefulWidget {
   const ReminderOverlay({super.key});
@@ -14,6 +16,11 @@ class _ReminderOverlayState extends State<ReminderOverlay>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
+  
+  // State variables for API response
+  String _reminderMessage = "Your attention is precious 💎\nLet's invest it wisely";
+  bool _isLoading = true;
+  int timer_in_sec = 30;
 
   @override
   void initState() {
@@ -40,23 +47,50 @@ class _ReminderOverlayState extends State<ReminderOverlay>
     ));
 
     _animationController.forward();
+    
+    // Make GET request when screen loads
+    _fetchReminderMessage();
+  }
+
+  // Method to fetch reminder message from backend
+  Future<void> _fetchReminderMessage() async {
+    try {
+      // Make POST request to backend with timer in seconds
+      final response = await http.post(
+        Uri.parse('http://localhost:5000/reminder'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'timer': timer_in_sec, // Send timer value in seconds
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _reminderMessage = data['message'] ?? _reminderMessage;
+          _isLoading = false;
+        });
+      } else {
+        // Handle error response
+        setState(() {
+          _isLoading = false;
+        });
+        // print('Failed to fetch reminder: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle network error (e.g., backend not running)
+      setState(() {
+        _isLoading = false;
+      });
+      // print('Error fetching reminder: $e');
+      // Keep the default message if backend is not available
+    }
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
-  }
-
-    // A function to implement when commi's timer trigger function is finished
-    Future<void> _showReminderOverlay() async {
-    if (await OverlayService.hasOverlayPermission()) {
-      // Show overlay
-      await FlutterOverlayWindow.showOverlay();
-    } else {
-      // Request permission first
-      await OverlayService.requestOverlayPermission();
-    }
   }
   @override
   Widget build(BuildContext context) {
@@ -124,14 +158,18 @@ class _ReminderOverlayState extends State<ReminderOverlay>
                       const SizedBox(height: 16),
                       
                       // Motivational message
-                      Text(
-                        "Your attention is precious 💎\nLet's invest it wisely",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white70,
-                          height: 1.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      _isLoading 
+                        ? const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                          )
+                        : Text(
+                            _reminderMessage,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Colors.white70,
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                       
                       const SizedBox(height: 32),
                       
