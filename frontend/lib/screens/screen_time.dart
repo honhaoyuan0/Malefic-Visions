@@ -1,5 +1,7 @@
-import'package:flutter/material.dart';
-import'screens.dart';
+import 'package:flutter/material.dart';
+import '../global_utilities/screen_utils.dart';
+import 'screens.dart';
+
 
 // Placeholder widget using mock data for screen time.
 // real screen time data will be integrated later.

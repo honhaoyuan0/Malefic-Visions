@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'screens.dart';
+import '../global_utilities/screen_utils.dart';
 
 class CategoryBarChart extends StatefulWidget {
   const CategoryBarChart({super.key});

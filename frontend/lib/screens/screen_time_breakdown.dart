@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens.dart';
+import '../global_utilities/screen_utils.dart';
 
 class ScreenTimeBreakdown extends StatefulWidget {
   const ScreenTimeBreakdown({super.key});

@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'screens.dart';
 import 'dart:math';
+import '../global_utilities/screen_utils.dart';
+import 'screens.dart';
 
 class AppInsights extends StatefulWidget {
   const AppInsights({super.key});
