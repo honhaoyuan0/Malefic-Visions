@@ -1,120 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'screens.dart';
 
-class ScreenTimeAnalysis extends StatelessWidget {
+class ScreenTimeAnalysis extends StatefulWidget {
   const ScreenTimeAnalysis({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-          padding: const EdgeInsets.only(top: 25, left: 18, right: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-      
-              //Screen Time
-              const TitleText('Screen Time'),
-              const SizedBox(height: 25),
-              const DailyScreenTime(),
-      
-              //App Usage Chart
-              const SizedBox(height: 27),
-              const TitleText('App Usage'),
-              const SizedBox(height: 10),
-              const TitleText(
-                'Here is the bar chart of your app usage',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 16.0,
-                ),
-              ),
-      
-              //Bar chart placeholder
-              const SizedBox(height: 200),
-      
-              //Insights
-              const TitleText('Insights'),
-              const SizedBox(height: 15),
-              SvgPicture.asset(
-                'assets/instagram-svgrepo-com.svg',
-                width: 50,
-                height: 50,
-              ),
-            ],
-          ),
-        ),
-    );
-  }
+  State<ScreenTimeAnalysis> createState() => _ScreenTimeAnalysisState(); 
 }
 
-
-
-
-// Title text widget
-class TitleText extends StatelessWidget {
-  final String text;
-  final TextStyle? style;
-  const TitleText(this.text, {this.style,super.key});
-
+class _ScreenTimeAnalysisState extends State<ScreenTimeAnalysis>{
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: style ?? 
-      const TextStyle(
-        color: Color.fromARGB(255, 0, 0, 0),
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
+    final screen = ScreenUtils(context);
+        return Scaffold(
+          body: SafeArea(
+          // Adjust padding based on screen size - to prevent overflow issues
+            child:Padding(
+              padding: EdgeInsets.only(
+                left: screen.width * 0.05,
+                right: screen.width * 0.03,
+                ),
+                //Wrap with ListView to show blocked contents
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //Screen Time
+                    Text('Screen Time', style: Theme.of(context).textTheme.displayMedium),
+                    SizedBox(height: screen.height * 0.03),
+                    Center(child: ScreenTime()),
+              
+                    //App Usage Chart
+                    SizedBox(height: screen.height * 0.03),
+                    Text('App Usage', style: Theme.of(context).textTheme.displayMedium),
+                    SizedBox(height: screen.height * 0.01),
+                    
+                    //Bar chart placeholder
+                    Container(
+                      decoration: BoxDecoration(
+                        color:Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: screen.height*0.01),
+                        child: CategoryBarChart(),
+                      )
+                      ),
+                    
+                    //Insights
+                    Text('Insights', style: Theme.of(context).textTheme.displayMedium),
+                    SizedBox(height: screen.height * 0.03),
+                    _buildGlassmorphicCard(
+                     child: AppInsights(), 
+                     screen: screen
+                     ),
+                  ],
+                ),
+              ),
+            ),
+          );
+  }
+
+Widget _buildGlassmorphicCard({
+    required Widget child,
+    required ScreenUtils screen,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.1),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: EdgeInsets.all(screen.width * 0.05),
+          child: child,
+        ),
       ),
     );
   }
 }
 
-// Daily screen time widget
-class DailyScreenTime extends StatelessWidget {
-  const DailyScreenTime({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: timebox(
-            title: 'Today',
-          ),
-        ),
-      ],
-    );
-  }
-}
 
-//Screen time box widget
-Widget timebox({
-  required String title,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    width: 200,
-    height: 135,
-    decoration: BoxDecoration(
-      color: const Color.fromARGB(255, 0, 0, 0),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: const Color.fromARGB(26, 241, 241, 241)),
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(color: Color.fromARGB(179, 250, 250, 250)),
-        ),
-        ],
-    ),
-  );
-}
+
+
+
 
 
 
